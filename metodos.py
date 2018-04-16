@@ -24,7 +24,7 @@ def metodoExplicito(c, L, T, h, k, f, a, b):
     
     m = round(L/h) + 1 #m puntos a lo largo de la barra
     n = round(T/k) + 1 #n puntos en el tiempo
-    
+
     x = np.linspace(0, L, m) #particion en la longitud de la barra
     
     sol = np.zeros((n,m)) # inicializamos la matriz de solucion
@@ -77,19 +77,4 @@ if __name__ == "__main__" :
 	
 	print( metodoExplicito(0.1, 1, 0.3, 0.2, 0.1, lambda x: 100, lambda x: 20, lambda x: 40) )		
 	print( metodoExplicitoMatriz(0.1, 1, 0.3, 0.2, 0.1, lambda x: 100, lambda x: 20, lambda x: 40) )		
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
