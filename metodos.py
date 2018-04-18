@@ -73,8 +73,35 @@ def metodoExplicitoMatriz(c, L, T, h, k, f, a, b):
         
     return sol
 
-if __name__ == "__main__" :
-	
-	print( metodoExplicito(0.1, 1, 0.3, 0.2, 0.1, lambda x: 100, lambda x: 20, lambda x: 40) )		
-	print( metodoExplicitoMatriz(0.1, 1, 0.3, 0.2, 0.1, lambda x: 100, lambda x: 20, lambda x: 40) )		
+def metodoCrankNicolson(c, L, T, h, k, f, a, b):
+    
+    r = c*k/h**2
+    m = round(L/h) + 1
+    n = round(T/k) + 1
+    
+    x = np.linspace(0, L, m)
+    
+    sol = np.zeros((n,m))
+    sol[0] = f(x)
+    sol[:,0] = a(0) 
+    sol[:,-1] = b(L)
+    
+    A = tridiag(-r/2, 1+r, -r/2, m-2)
+    B = tridiag(r/2, 1-r, r/2, m-2)
+         
+    A_inv = np.linalg.inv(A)
 
+    for i in range(n-1):
+        
+        C = np.dot(B, sol[i,1:-1])
+        C[0]  += r/2*(sol[i+1,0]  + sol[i,0])
+        C[-1] += r/2*(sol[i+1,-1] + sol[i,-1])
+
+        sol[i+1,1:-1] = np.dot(A_inv, C)
+    
+    return sol
+
+
+if __name__ == "__main__" :
+    
+	 print(metodoCrankNicolson(1, 1, 0.5, 0.1, 0.01, lambda x: np.sin(np.pi*x), lambda x: 0, lambda x: 0 ) )
