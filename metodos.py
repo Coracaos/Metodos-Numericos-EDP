@@ -115,8 +115,10 @@ def metodoCrankNicolson(c, L, T, h, k, f, a, b):
     
     A = tridiag(-r/2, 1+r, -r/2, m-2)
     B = tridiag(r/2, 1-r, r/2, m-2)
+
          
     A_inv = np.linalg.inv(A)
+
 
     for i in range(n-1):
         
@@ -148,7 +150,7 @@ def metodoHiperbolica(c, L, T, h, k, f, g, a, b):
         sol[1,j] = (1-r)*f(x[j]) + (r/2)*f(x[j+1]) + (r/2)*f(x[j-1]) + k*g(x[j])
 
     sol[:,0] = a(0)
-    sol[:,-1] = b(0)
+    sol[:,-1] = b(L)
 
     A = tridiag(r, 2-2*r, r, m-2)
 
@@ -162,12 +164,15 @@ def metodoHiperbolica(c, L, T, h, k, f, g, a, b):
 
 
 if __name__ == "__main__" :
+
+    sol = metodoHiperbolica(1, 1, 0.4, 0.05, 0.1, lambda x: 100*x**2, lambda x: 200*x, lambda x: 100*x**2, lambda x: 100*(1+x)**2)
+    print(sol)
     
-    sol1 = metodoHiperbolica(1, 1, 1, 0.25, 0.25, lambda x: np.sin(np.pi*x), lambda x: 0, lambda x: 0, lambda x:0)
-    sol2 = metodoHiperbolica(1, np.pi, 0.5, np.pi/10.0, 0.05, lambda x: np.sin(x), lambda x: 0, lambda x: 0, lambda x:0)
-    sol3 = metodoHiperbolica(1, np.pi, 0.5, np.pi/20.0, 0.1, lambda x: np.sin(x), lambda x: 0, lambda x: 0, lambda x:0)
-    sol4 = metodoHiperbolica(1, np.pi, 0.5, np.pi/20.0, 0.05, lambda x: np.sin(x), lambda x: 0, lambda x: 0, lambda x:0)
-    sol5 = metodoHiperbolica(1, 1, 0.3, 0.1, 0.1, lambda x: np.sin(2*np.pi*x), lambda x: 2*np.pi*np.sin(2*np.pi*x), lambda x: 0, lambda x:0)
+    #sol1 = metodoHiperbolica(1, 1, 1, 0.25, 0.25, lambda x: np.sin(np.pi*x), lambda x: 0, lambda x: 0, lambda x:0)
+    #sol2 = metodoHiperbolica(1, np.pi, 0.5, np.pi/10.0, 0.05, lambda x: np.sin(x), lambda x: 0, lambda x: 0, lambda x:0)
+    #sol3 = metodoHiperbolica(1, np.pi, 0.5, np.pi/20.0, 0.1, lambda x: np.sin(x), lambda x: 0, lambda x: 0, lambda x:0)
+    #sol4 = metodoHiperbolica(1, np.pi, 0.5, np.pi/20.0, 0.05, lambda x: np.sin(x), lambda x: 0, lambda x: 0, lambda x:0)
+    #sol5 = metodoHiperbolica(1, 1, 0.3, 0.1, 0.1, lambda x: np.sin(2*np.pi*x), lambda x: 2*np.pi*np.sin(2*np.pi*x), lambda x: 0, lambda x:0)
     #print(sol5)
     #sol = metodoExplicito(1, 1, 0.5, 0.1, 0.01, lambda x: np.sin(np.pi*x), lambda x: 0, lambda x: 0 )
     #print(sol[-1])
