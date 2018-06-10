@@ -99,6 +99,7 @@ def metodoImplicito(c, L, T, h, k, f, a, b):
     return sol
 
 
+
 def metodoCrankNicolson(c, L, T, h, k, f, a, b):
     
     r = c*k/h**2
@@ -166,63 +167,40 @@ def metodoEliptica(a, b, c, d, h, k, f, g_a, g_b, g_c, g_d):
     r = (h**2)/k**2
 
     n = round((b-a)/h) + 1
-    m = round((d-c)/k) + 1
+    m = round((c-d)/k) + 1
 
-    x = np.linspace(a , b, n);
-    y = np.linspace(c , d, m);
+    x = np.linspace(a,b,n);
+    y = np.linspace(c,d,m);
 
     p = (n-2)*(m-2)
-     
-    C = tridiag(r, -2*(1+r), r, n-2)
 
-    A = np.kron(np.eye(m-2), C)
+    A = tridiag(r, -2(1+r), r, p)
+    np.fill_diagonal(A[:p-(n-2),(n-2):],r)
+    np.fill_diagonal(A[(n-2):,:p-(n-2)],r)
+
+    xx,yy = np.meshgrid(x[1,-1],y[1,-1])
+
+    B = (h**2)*f(xx,yy[::-1])
     
-    np.fill_diagonal(A[:(p-(n-2)),(n-2):],r)
-
-    np.fill_diagonal(A[(n-2):,:(p-(n-2))],r)
-
-    xx,yy = np.meshgrid(x[1:-1],y[1:-1])
-    
-    B = np.zeros((m-2,n-2))
-    
-    for i in range(m-2):
-        for j in range(n-2):
-            B[i,j] = (h**2) * f(x[j+1], y[-(i+2)]) 
-
     for i in range(m-2):  
         B[i,0] -= g_a( y[-(i+2)] )
         B[i,-1] -= g_b( y[-(i+2)] )         
 
     for j in range(n-2):
-        B[0,j] -= r*g_d(x[j+1])
-        B[-1,j] -= r*g_c(x[j+1]) 
-    
-    B = np.reshape(B, np.size(B))
+        B[1,j] -= r*g_d(x[j+1])
+        B[(m-3),j ] -= r*g_c(x[j+1]) 
 
-    W = np.linalg.solve(A, B)
+    W = np.inv(A)*B
 
-    #malla de solucion
+    return W
 
-    sol = np.zeros((n,m))
-
-    sol[0,:]  = [g_c(i) for i in x]
-    sol[-1,:] = [g_d(i) for i in x]
-    sol[:,0]  = [g_a(i) for i in y]
-    sol[:,-1] = [g_b(i) for i in y]
-
-    W = np.reshape(W, (m-2,n-2) )    
-
-    sol[1:-1,1:-1] = W
-
-    return sol
-
+     
 
 if __name__ == "__main__" :
 
-
-    W0 = metodoEliptica(0, 4, 0, 4, 1, 1, lambda x, y: 0, lambda x: 80, lambda x: 0.0, lambda x: 20, lambda x: 180)
-    print(W0)
-
+    A = metodoEliptica(0, 1, 0, 1, 0.2, 0.2, 0, lambda x: 0, lambda x: x, lambda x: 0, lambda x: x)
+    print(A)
+    
     #sol = metodoHiperbolica(1, 1, 0.4, 0.05, 0.1, lambda x: 100*x**2, lambda x: 200*x, lambda x: 100*x**2, lambda x: 100*(1+x)**2)
     #print(sol)
 
